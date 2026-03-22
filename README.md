@@ -50,5 +50,3 @@ To delete a Dataproc cluster:
 ```bash
 gcloud dataproc clusters delete [CLUSTER_NAME] --region=[REGION] --quiet
 ```
-
-Refer to the [Google Cloud Dataproc documentation](https://cloud.google.com/dataproc/docs) for more details on managing clusters and jobs.
