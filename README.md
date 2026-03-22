@@ -1,40 +1,54 @@
-# GCP-Infrastructure-Dataproc-Automation
-Markdown# GCP Infrastructure & Dataproc Automation Guide
+# Repository Structure
 
-This repository contains Terraform configurations for a VPC network and a summary of Dataproc cluster management based on Google Cloud training modules.
+This repository contains the project files organized as follows:
 
----
+- **/terraform**: Contains all the Terraform configuration files used for infrastructure provisioning.
+- **/dataproc**: Contains scripts and configurations specific to Google Cloud Dataproc.
+- **README.md**: This file provides an overview of the project.
 
-## Part 1: Terraform Infrastructure Setup
 
-Follow these steps in **Google Cloud Shell** to deploy the network and VM instances.
+# Terraform Infrastructure
 
-### 1. Initialize Environment
+The Terraform files in the `/terraform` directory allow for automated provisioning of resources in Google Cloud. The key files include:
+
+- **main.tf**: The main configuration file that defines the cloud resources.
+- **variables.tf**: Contains variables to parameterize configurations.
+- **outputs.tf**: Specifies the outputs of the Terraform configuration.
+
+To deploy the infrastructure, run the following commands:
+
 ```bash
-# Verify Terraform version
-terraform --version
-
-# Create and enter directory
-mkdir tfinfra && cd tfinfra
-2. Initialize TerraformAfter creating provider.tf, run:Bashterraform init
-3. Deploy ResourcesBash# Rewrite files to canonical format
-terraform fmt
-
-# Review the execution plan (should show 4 resources to add)
+terraform init
 terraform plan
-
-# Apply the configuration
 terraform apply
-# Type 'yes' when prompted
-4. Verify ConnectivityOnce the apply is complete, verify the internal connection between mynet-vm-1 and mynet-vm-2:Go to Compute Engine > VM Instances.Note the Internal IP of mynet-vm-2.Click SSH on mynet-vm-1.Run the ping test:Bashping -c 3 <INTERNAL_IP_OF_VM_2>
-Part 2: Dataproc Cluster Management (Manual Workflow)Based on the Dataproc transcript, follow these steps to run a Spark job.1. Cluster CreationNavigation: Big Data > Dataproc > Clusters.Name: example-clusterNodes: 1 Master, 2 Workers (Standard Mode).Machine Type: n1-standard-4 (4 vCPUs).2. Scaling the ClusterTo add more compute power while the cluster is running:Click on the cluster name > Configuration tab.Click Edit.Change Worker nodes from 2 to 3.Click Save.3. Submitting a Spark JobNavigate to Jobs > Submit Job and use these parameters:FieldValueJob TypeSparkMain classorg.apache.spark.examples.SparkPiJar filesfile:///usr/lib/spark/examples/jars/spark-examples.jarArguments10004. CleanupTo avoid recurring charges, delete the resources once the job status shows Succeeded:Bash# If using gcloud CLI:
-gcloud dataproc clusters delete example-cluster --region=[YOUR_REGION]
-Part 3: Teardown TerraformTo remove the VPC, Firewall, and VM instances created in Part 1:Bashterraform destroy
-# Type 'yes' when prompted
+```
 
----
+Ensure that you have configured your Google Cloud credentials properly before running these commands.
 
-### Why this matters
-Including the `ping` and `fmt` commands makes this repo a "Golden Path" for anyone trying to replicate your work. It ensures the code is clean, the infrastructure is verified, and the Big Data jobs are documented.
 
-Would you like me to create a shell script (`setup.sh`) that automates the file crea
+# Dataproc Guide
+
+This section provides an overview of managing Dataproc clusters.
+
+## Creating a Cluster
+To create a Dataproc cluster:
+
+```bash
+gcloud dataproc clusters create [CLUSTER_NAME] --region=[REGION]
+```
+
+## Submitting a Job
+To submit a job to the Dataproc cluster:
+
+```bash
+gcloud dataproc jobs submit [JOB_TYPE] --cluster=[CLUSTER_NAME] --region=[REGION]
+```
+
+## Deleting a Cluster
+To delete a Dataproc cluster:
+
+```bash
+gcloud dataproc clusters delete [CLUSTER_NAME] --region=[REGION] --quiet
+```
+
+Refer to the [Google Cloud Dataproc documentation](https://cloud.google.com/dataproc/docs) for more details on managing clusters and jobs.
